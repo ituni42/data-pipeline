@@ -10,7 +10,7 @@ default_args = {
 }
 
 SPARK_SUBMIT = (
-    "docker exec motor_insurance_pipeline-spark-master-1 "
+    "docker exec $(docker ps -qf 'name=spark-master') "
     "/opt/spark/bin/spark-submit "
     "--master spark://spark-master:7077 "
     "/opt/pipeline/src/pipeline_runner.py "
