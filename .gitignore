@@ -1,0 +1,32 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+
+# Output data (don't commit generated pipeline output)
+data/output/
+
+# Airflow
+logs/
+airflow.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Spark output and intermediate data (generated at runtime, don't commit)
+data/output/
+data/tmp/

@@ -1,0 +1,79 @@
+{
+  "dataflows": [
+    {
+      "name": "motor-ingestion",
+      "sources": [
+        {
+          "name": "policy_inputs",
+          "path": "/opt/pipeline/data/input/events/motor_policy",
+          "format": "JSON"
+        }
+      ],
+      "transformations": [
+        {
+          "name": "validation",
+          "type": "validate_fields",
+          "params": {
+            "input": "policy_inputs",
+            "validations": [
+              {
+                "field": "plate_number",
+                "validations": ["notEmpty"]
+              },
+              {
+                "field": "driver_age",
+                "validations": ["notNull", "validAge"]
+              },
+              {
+                "field": "policy_number",
+                "validations": ["notEmpty"]
+              }
+            ]
+          }
+        },
+        {
+          "name": "add_ingestion_date",
+          "type": "add_fields",
+          "params": {
+            "input": "validation_ok",
+            "addFields": [
+              {
+                "name": "ingestion_dt",
+                "function": "current_timestamp"
+              }
+            ]
+          }
+        },
+        {
+          "name": "add_ingestion_date_ko",
+          "type": "add_fields",
+          "params": {
+            "input": "validation_ko",
+            "addFields": [
+              {
+                "name": "ingestion_dt",
+                "function": "current_timestamp"
+              }
+            ]
+          }
+        }
+      ],
+      "sinks": [
+        {
+          "name": "raw-ok",
+          "input": "add_ingestion_date",
+          "paths": ["/opt/pipeline/data/output/events/motor_policy"],
+          "format": "JSON",
+          "saveMode": "OVERWRITE"
+        },
+        {
+          "name": "raw-ko",
+          "input": "add_ingestion_date_ko",
+          "paths": ["/opt/pipeline/data/output/discards/motor_policy"],
+          "format": "JSON",
+          "saveMode": "OVERWRITE"
+        }
+      ]
+    }
+  ]
+}
